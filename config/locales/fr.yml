@@ -1,0 +1,26 @@
+fr:
+  label_login_with_oidc: S'authentifier via SSO
+  label_or_login_with_password: ou s'authentifier par login / mot de passe
+  label_login_page_text: Texte de la page de connexion
+  label_oidc_enabled: Activer l'authentification OIDC
+  label_oidc_issuer_url: URL de l'émetteur OIDC (Issuer)
+  label_oidc_client_id: Client ID
+  label_oidc_client_secret: Client Secret
+  label_oidc_scope: Scopes demandés
+  label_oidc_uid_field: Champ identifiant utilisateur (claim)
+  label_replace_redmine_login: Remplacer la page de connexion Redmine
+  label_oidc_auto_provision: Créer automatiquement les comptes
+  label_oidc_auto_provision_active: Comptes créés automatiquement actifs
+  notice_oidc_yaml_config_active: "Les paramètres OIDC sont configurés via ce fichier :"
+  notice_oidc_secret_warning: "Attention : le client secret sera stocké en base de données. Utilisez config/omniauth_oidc.yml en production."
+  notice_oidc_uid_field_hint: "Ce claim OIDC (issu de userinfo ou id_token) est utilisé pour retrouver l'utilisateur Redmine correspondant."
+  notice_oidc_auto_provision_hint: "Si activé, un compte Redmine sera créé automatiquement lors du premier accès via OIDC."
+  notice_oidc_auto_provision_active_hint: "Si activé, le compte créé automatiquement sera directement actif. Sinon il sera en attente de validation par un administrateur."
+  label_oidc_claim_firstname: "Claim prénom"
+  label_oidc_claim_lastname: "Claim nom de famille"
+  notice_oidc_claim_hint: "Claim OIDC utilisé pour remplir ce champ lors de la création automatique du compte."
+  text_logout_from_oidc: déconnecter du fournisseur SSO
+  text_full_logout_proposal_oidc: Vous pouvez %{value} avant d'essayer un autre identifiant.
+  error_oidc_access_denied: L'accès a été refusé par le fournisseur d'identité OIDC.
+  error_oidc_invalid_credentials: Identifiants invalides retournés par le fournisseur OIDC.
+  error_oidc_unknown: Une erreur inconnue s'est produite lors de l'authentification OIDC.

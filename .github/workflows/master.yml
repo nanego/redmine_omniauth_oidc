@@ -1,0 +1,100 @@
+name: Tests master
+
+env:
+  PLUGIN_NAME: redmine_omniauth_oidc
+  REDMINE_VERSION: master
+  RAILS_ENV: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ github.workflow }} ${{ matrix.db }} ruby-${{ matrix.ruby }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby: ['3.4']
+        db: ['postgres']
+      fail-fast: false
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: redmine
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Redmine
+        uses: actions/checkout@v4
+        with:
+          repository: redmine/redmine
+          ref: ${{ env.REDMINE_VERSION }}
+          path: redmine
+
+      - name: Install package dependencies
+        run: >
+          sudo apt-get update && sudo apt-get install --yes --quiet
+          build-essential
+          libpq-dev
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Checkout dependency - redmine_base_rspec
+        uses: actions/checkout@v4
+        with:
+          repository: jbbarth/redmine_base_rspec
+          path: redmine/plugins/redmine_base_rspec
+
+      - name: Checkout dependency - redmine_base_deface
+        uses: actions/checkout@v4
+        with:
+          repository: jbbarth/redmine_base_deface
+          path: redmine/plugins/redmine_base_deface
+
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+        with:
+          path: redmine/plugins/${{ env.PLUGIN_NAME }}
+
+      - name: Prepare Redmine source
+        working-directory: redmine
+        run: |
+          sed -i '/rubocop/d' Gemfile
+          rm -f .rubocop*
+          cp plugins/redmine_base_rspec/spec/support/database-${{ matrix.db }}.yml config/database.yml
+
+      - name: Install Ruby dependencies
+        working-directory: redmine
+        run: bundle install --jobs=4 --retry=3 --without development
+
+      - name: Setup database and initializer
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: |
+          cp plugins/${{ env.PLUGIN_NAME }}/initializers/redmine_omniauth_oidc.rb config/initializers/
+          bundle exec rake generate_secret_token
+          bundle exec rake db:create db:migrate
+          bundle exec rails db:fixtures:load
+
+      - name: Run plugin specs
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: bundle exec rspec plugins/${{ env.PLUGIN_NAME }}/spec/ --format documentation

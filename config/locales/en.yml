@@ -1,0 +1,26 @@
+en:
+  label_login_with_oidc: Login with SSO
+  label_or_login_with_password: or sign in with login / password
+  label_login_page_text: Login page text
+  label_oidc_enabled: Enable OIDC authentication
+  label_oidc_issuer_url: OIDC Issuer URL
+  label_oidc_client_id: Client ID
+  label_oidc_client_secret: Client Secret
+  label_oidc_scope: Requested scopes
+  label_oidc_uid_field: User identifier field (claim)
+  label_replace_redmine_login: Replace Redmine login page
+  label_oidc_auto_provision: Auto-create user accounts
+  label_oidc_auto_provision_active: Auto-created accounts are active
+  notice_oidc_yaml_config_active: "OIDC settings are configured via YAML file:"
+  notice_oidc_secret_warning: "Warning: client secret will be stored in the database. Use config/omniauth_oidc.yml in production."
+  notice_oidc_uid_field_hint: "This OIDC claim (from userinfo or id_token) is used to find the matching Redmine user."
+  notice_oidc_auto_provision_hint: "If enabled, a Redmine account will be created automatically on first OIDC login."
+  notice_oidc_auto_provision_active_hint: "If enabled, auto-created accounts will be immediately active. Otherwise they will require admin approval."
+  label_oidc_claim_firstname: "Firstname claim"
+  label_oidc_claim_lastname: "Lastname claim"
+  notice_oidc_claim_hint: "OIDC claim used to populate this field when auto-provisioning a new account."
+  text_logout_from_oidc: logout from SSO provider
+  text_full_logout_proposal_oidc: You may want to %{value} before trying another username.
+  error_oidc_access_denied: Access was denied by the OIDC identity provider.
+  error_oidc_invalid_credentials: Invalid credentials returned by the OIDC provider.
+  error_oidc_unknown: An unknown error occurred during OIDC authentication.

@@ -1,0 +1,8 @@
+# OIDC provider configuration (deployment/sensitive settings)
+# Copy this file to config/omniauth_oidc.yml and fill in your values.
+# Settings here take priority over the database admin settings.
+# This file should NOT be committed to version control.
+
+oidc_issuer_url: https://sso.example.com/oidc
+oidc_client_id: my-client-id
+oidc_client_secret: my-client-secret

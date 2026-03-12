@@ -1,0 +1,16 @@
+<% if RedmineOmniauthOidc.enabled? && RedmineOmniauthOidc.oidc_issuer_url.present? %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag "login", :plugin => "redmine_omniauth_oidc" %>
+<% end %>
+
+<div id="oidc-login">
+  <%
+    @back_url = back_url
+    # Unescape back_url on-the-fly — it may be double-escaped behind reverse proxies
+    @back_url = CGI.unescape(@back_url) if @back_url && @back_url.match(/^https?%3A/)
+  %>
+  <%= button_to label_for_oidc_login, :controller => "account", :action => "login_with_oidc_redirect", :origin => @back_url %>
+</div>
+
+<% end %>

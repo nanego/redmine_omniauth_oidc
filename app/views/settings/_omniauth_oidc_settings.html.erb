@@ -1,0 +1,123 @@
+<%
+  issuer_from_yaml  = RedmineOmniauthOidc.from_yaml_config_file?('oidc_issuer_url')
+  id_from_yaml      = RedmineOmniauthOidc.from_yaml_config_file?('oidc_client_id')
+  secret_from_yaml  = RedmineOmniauthOidc.from_yaml_config_file?('oidc_client_secret')
+  yaml_active       = RedmineOmniauthOidc.yaml_config_exists?
+%>
+
+<% flash.now[:error] = "#{l(:label_oidc_issuer_url)} #{l("activerecord.errors.messages.blank")}" if @settings['oidc_issuer_url'].blank? && !issuer_from_yaml %>
+
+<p>
+  <label><%= l(:label_oidc_enabled) %></label>
+  <%= check_box_tag 'settings[enabled]', '1', @settings['enabled'] == '1' %>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_issuer_url) %><span class="required"> *</span></label>
+  <% if issuer_from_yaml %>
+    <%= text_field_tag 'settings[oidc_issuer_url]', RedmineOmniauthOidc.oidc_issuer_url, :size => 80, :disabled => true %>
+    <br/>
+    <em class="info">
+      <%= l(:notice_oidc_yaml_config_active) %>
+      <code><%= RedmineOmniauthOidc.yaml_config_path %></code>
+    </em>
+  <% else %>
+    <%= text_field_tag 'settings[oidc_issuer_url]', @settings['oidc_issuer_url'], :size => 80 %>
+    <br/>
+    <em><%= l(:label_example) %>: https://sso.example.com/oidc</em>
+  <% end %>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_client_id) %><span class="required"> *</span></label>
+  <% if id_from_yaml %>
+    <%= text_field_tag 'settings[oidc_client_id]', RedmineOmniauthOidc.oidc_client_id, :size => 60, :disabled => true %>
+    <br/>
+    <em class="info">
+      <%= l(:notice_oidc_yaml_config_active) %>
+      <code><%= RedmineOmniauthOidc.yaml_config_path %></code>
+    </em>
+  <% else %>
+    <%= text_field_tag 'settings[oidc_client_id]', @settings['oidc_client_id'], :size => 60 %>
+  <% end %>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_client_secret) %><span class="required"> *</span></label>
+  <% if secret_from_yaml %>
+    <%= password_field_tag 'settings[oidc_client_secret]', '(set in YAML file)', :size => 60, :disabled => true %>
+    <br/>
+    <em class="info">
+      <%= l(:notice_oidc_yaml_config_active) %>
+      <code><%= RedmineOmniauthOidc.yaml_config_path %></code>
+    </em>
+  <% else %>
+    <%= password_field_tag 'settings[oidc_client_secret]', @settings['oidc_client_secret'], :size => 60 %>
+    <br/>
+    <em class="warning"><%= l(:notice_oidc_secret_warning) %></em>
+  <% end %>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_scope) %></label>
+  <%= text_field_tag 'settings[oidc_scope]', @settings['oidc_scope'], :size => 60 %>
+  <br/>
+  <em><%= l(:label_example) %>: openid profile email</em>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_uid_field) %></label>
+  <%= select_tag 'settings[oidc_uid_field]',
+        options_for_select(
+          [['email', 'email'], ['uid', 'uid'], ['preferred_username', 'preferred_username'], ['sub', 'sub']],
+          @settings['oidc_uid_field']
+        ) %>
+  <br/>
+  <em><%= l(:notice_oidc_uid_field_hint) %></em>
+</p>
+
+<p>
+  <label><%= l(:label_login_page_text) %></label>
+  <%= text_field_tag 'settings[label_login_with_oidc]', @settings['label_login_with_oidc'], :size => 60 %>
+</p>
+
+<p>
+  <label><%= l(:label_replace_redmine_login) %></label>
+  <%= check_box_tag 'settings[replace_redmine_login]', '1', @settings['replace_redmine_login'] == '1' %>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_auto_provision) %></label>
+  <%= check_box_tag 'settings[auto_provision]', '1', @settings['auto_provision'] == '1' %>
+  <br/>
+  <em><%= l(:notice_oidc_auto_provision_hint) %></em>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_auto_provision_active) %></label>
+  <%= check_box_tag 'settings[auto_provision_active]', '1', @settings['auto_provision_active'] == '1' %>
+  <br/>
+  <em><%= l(:notice_oidc_auto_provision_active_hint) %></em>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_claim_firstname) %></label>
+  <%= select_tag 'settings[oidc_claim_firstname]',
+        options_for_select(
+          [['given_name', 'given_name'], ['name', 'name'], ['nickname', 'nickname']],
+          @settings['oidc_claim_firstname'].presence || 'given_name'
+        ) %>
+  <br/>
+  <em><%= l(:notice_oidc_claim_hint) %></em>
+</p>
+
+<p>
+  <label><%= l(:label_oidc_claim_lastname) %></label>
+  <%= select_tag 'settings[oidc_claim_lastname]',
+        options_for_select(
+          [['family_name', 'family_name'], ['usual_name', 'usual_name'], ['name', 'name']],
+          @settings['oidc_claim_lastname'].presence || 'family_name'
+        ) %>
+  <br/>
+  <em><%= l(:notice_oidc_claim_hint) %></em>
+</p>
