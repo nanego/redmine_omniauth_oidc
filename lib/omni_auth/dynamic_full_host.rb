@@ -1,24 +1,50 @@
-# configures public url for our application
+# Configures the public URL of the application so that OmniAuth can build
+# a correct redirect_uri to send to the OIDC provider.
 module OmniAuth::DynamicFullHost
   def self.full_host_url(url = nil)
-    # unescapes url on-the-fly because it might be double-escaped in some environments
-    #(it happens for me at work with 2 reverse-proxies in front of the app...)
     url = CGI.unescape(url) if url
 
-    # if no url found, fall back to config/app_config.yml addresses
-    if url.blank?
-      url = Setting["host_name"]
-      # else, parse it and remove both request_uri and query_string
-    else
-      uri = URI.parse(URI::Parser.new.escape(url)) # Encode to ensure we only have ASCII charaters in url
-      url = "#{uri.scheme}://#{uri.host}"
-      url << ":#{uri.port}" unless uri.default_port == uri.port
+    # If a full URL with scheme+host is available (e.g. from omniauth.origin),
+    # extract only the scheme://host[:port] part.
+    if url.present?
+      begin
+        uri = URI.parse(URI::Parser.new.escape(url))
+        if uri.scheme.present? && uri.host.present?
+          result = "#{uri.scheme}://#{uri.host}"
+          result << ":#{uri.port}" unless uri.default_port == uri.port
+          return result
+        end
+      rescue URI::InvalidURIError
+        # fall through to Redmine settings
+      end
     end
-    url
+
+    # Fall back to Redmine's host_name setting.
+    # Setting["host_name"] may be:
+    #   - a bare host[:port][/subpath]  (e.g. "redmine.example.com")    → prepend Setting.protocol
+    #   - a full URL                    (e.g. "http://redmine.example.com") → use as-is
+    host_setting = Setting["host_name"].to_s
+    begin
+      host_uri = URI.parse(URI::Parser.new.escape(host_setting))
+      if host_uri.scheme.present? && host_uri.host.present?
+        result = "#{host_uri.scheme}://#{host_uri.host}"
+        result << ":#{host_uri.port}" unless host_uri.default_port == host_uri.port
+        return result
+      end
+    rescue URI::InvalidURIError
+      # fall through
+    end
+
+    # Plain hostname (Redmine standard): prepend the configured protocol.
+    host     = host_setting.split('/').first
+    protocol = Setting.protocol.presence || 'https'
+    "#{protocol}://#{host}"
   end
 end
 
 # Only set if not already configured by another plugin (e.g. redmine_omniauth_cas)
 OmniAuth.config.full_host ||= Proc.new do |env|
-  OmniAuth::DynamicFullHost.full_host_url(env["rack.session"]["omniauth.origin"] || env["omniauth.origin"])
+  OmniAuth::DynamicFullHost.full_host_url(
+    env["rack.session"]["omniauth.origin"] || env["omniauth.origin"]
+  )
 end
