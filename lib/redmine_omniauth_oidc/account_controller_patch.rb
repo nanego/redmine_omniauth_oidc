@@ -69,15 +69,17 @@ module RedmineOmniauthOidc
           user.update_attribute(:last_login_on, Time.now)
           params[:back_url] = request.env["omniauth.origin"] unless request.env["omniauth.origin"].blank?
 
-          # Capture end_session_endpoint before reset_session clears the context
+          # Capture end_session_endpoint and id_token before reset_session clears the context
           # Discovery populates client_options.end_session_endpoint during the callback phase
           strategy = request.env['omniauth.strategy']
           end_session_endpoint = strategy&.options&.dig(:client_options, :end_session_endpoint).to_s
+          id_token = auth.dig('credentials', 'id_token').to_s
 
           successful_authentication(user)
           # Must be set AFTER successful_authentication because it calls reset_session
           session[:logged_in_with_oidc] = true
           session[:oidc_end_session_endpoint] = end_session_endpoint if end_session_endpoint.present?
+          session[:oidc_id_token] = id_token if id_token.present?
         end
       end
 
@@ -95,8 +97,10 @@ module RedmineOmniauthOidc
       def logout_with_oidc
         if oidc_settings["enabled"] == '1' && session[:logged_in_with_oidc]
           end_session_url = session[:oidc_end_session_endpoint].presence
+          id_token        = session[:oidc_id_token].presence
           logout_user
           if end_session_url.present?
+            end_session_url = "#{end_session_url}?id_token_hint=#{CGI.escape(id_token)}" if id_token.present?
             redirect_to end_session_url, :allow_other_host => true
           else
             redirect_to home_url
