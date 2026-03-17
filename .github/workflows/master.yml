@@ -93,6 +93,12 @@ jobs:
           bundle exec rake db:create db:migrate
           bundle exec rails db:fixtures:load
 
+      - name: Run core tests
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: bundle exec rails test
+
       - name: Run plugin specs
         env:
           RAILS_ENV: test
