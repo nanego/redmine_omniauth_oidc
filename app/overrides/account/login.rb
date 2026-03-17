@@ -3,7 +3,7 @@ if defined?(Deface)
                        :name          => 'hide-login-form-oidc',
                        :surround      => '#login-form',
                        :text          => <<-HTML
-<% if RedmineOmniauthOidc.enabled? && RedmineOmniauthOidc.oidc_issuer_url.present? && RedmineOmniauthOidc.settings_hash['replace_redmine_login'] == '1' %>
+<% if RedmineOmniauthOidc.enabled? && RedmineOmniauthOidc.oidc_issuer_url.present? %>
 <div style="text-align:center; margin:15px">
   <em class=info>
     <%= link_to_function l(:label_or_login_with_password), "$('#login-form-container').show(); $(this).hide();" %>
