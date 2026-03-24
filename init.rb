@@ -20,6 +20,7 @@ Redmine::Plugin.register :redmine_omniauth_oidc do
   url 'https://github.com/nanego/redmine_omniauth_oidc'
   version '1.0.0'
   requires_redmine :version_or_higher => '6.0.0'
+  requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   requires_redmine_plugin :redmine_base_rspec, :version_or_higher => '0.0.3' if Rails.env.test?
   settings :default => {
              'enabled'               => '',
