@@ -15,7 +15,7 @@ OpenID Connect (OIDC) authentication plugin for Redmine. Compatible with any sta
 
 ## Dependencies
 
-This plugin requires [redmine_base_deface](https://github.com/nanego/redmine_base_deface) to be installed (used to inject the OIDC login button into Redmine views).
+This plugin requires [redmine_base_deface](https://github.com/jbbarth/redmine_base_deface) to be installed (used to inject the OIDC login button into Redmine views).
 
 ## Installation
 
