@@ -161,6 +161,7 @@ module RedmineOmniauthOidc
         user.random_password
         if user.save
           logger.info "OIDC auto-provisioned user '#{login}' (#{email}) with status #{status}"
+          journalize_user_auto_creation(user) if Redmine::Plugin.installed?(:redmine_admin_activity)
           user
         else
           logger.error "OIDC auto-provision failed for '#{login}' (#{email}): #{user.errors.full_messages.join(', ')}"
@@ -177,5 +178,6 @@ unless AccountController.included_modules.include? RedmineOmniauthOidc::AccountC
 end
 
 class AccountController
+  include RedmineAdminActivity::Journalizable if Redmine::Plugin.installed?(:redmine_admin_activity)
   skip_before_action :verify_authenticity_token, only: [:login_with_oidc_callback]
 end
