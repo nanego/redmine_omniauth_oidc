@@ -8,12 +8,14 @@ describe AccountController, type: :controller do
     Setting["plugin_redmine_omniauth_oidc"]["oidc_issuer_url"] = "https://sso.example.com/oidc/myapp"
   end
 
-  def oidc_auth_hash(email:, uid: nil, preferred_username: nil, given_name: nil, family_name: nil)
+  def oidc_auth_hash(email:, uid: nil, preferred_username: nil, given_name: nil, family_name: nil, auth_level: nil, acr: nil)
     raw_info = {}
     raw_info['uid'] = uid if uid
     raw_info['preferred_username'] = preferred_username if preferred_username
     raw_info['given_name'] = given_name if given_name
     raw_info['family_name'] = family_name if family_name
+    raw_info['auth_level'] = auth_level if auth_level
+    raw_info['acr'] = acr if acr
     OmniAuth::AuthHash.new(
       'uid'   => email,
       'info'  => { 'email' => email },
@@ -53,6 +55,32 @@ describe AccountController, type: :controller do
       request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
       get :login_with_oidc_callback, params: { :provider => "openid_connect" }
       expect(session[:logged_in_with_oidc]).to be_truthy
+    end
+
+    context "oidc_auth_level session storage" do
+      it "stores auth_level claim in session when present" do
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo", auth_level: "cert3")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:oidc_auth_level]).to eq "cert3"
+      end
+
+      it "falls back to acr claim when auth_level is absent" do
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo", acr: "urn:oasis:names:tc:SAML:2.0:ac:classes:Password")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:oidc_auth_level]).to eq "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
+      end
+
+      it "does not set oidc_auth_level when neither claim is present" do
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:oidc_auth_level]).to be_nil
+      end
+
+      it "prefers auth_level over acr when both are present" do
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo", auth_level: "cert3", acr: "cert1")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:oidc_auth_level]).to eq "cert3"
+      end
     end
 
     it "should redirect to /login if user not found and auto_provision is disabled" do

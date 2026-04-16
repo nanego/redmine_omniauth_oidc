@@ -80,6 +80,12 @@ module RedmineOmniauthOidc
           session[:logged_in_with_oidc] = true
           session[:oidc_end_session_endpoint] = end_session_endpoint if end_session_endpoint.present?
           session[:oidc_id_token] = id_token if id_token.present?
+
+          # Store authentication level: prefer 'auth_level' claim,
+          # fall back to the standard OIDC 'acr' claim. Stored only when present.
+          raw_info = auth.dig('extra', 'raw_info') || {}
+          auth_level = raw_info['auth_level'].to_s.presence || raw_info['acr'].to_s.presence
+          session[:oidc_auth_level] = auth_level if auth_level
         end
       end
 
