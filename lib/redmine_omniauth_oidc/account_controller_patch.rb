@@ -91,13 +91,10 @@ module RedmineOmniauthOidc
 
       def login_with_oidc_failure
         error = 'error_oidc_' + (params[:message] || 'unknown')
-        if oidc_settings["replace_redmine_login"] == '1'
-          render_error({ :message => error.to_sym, :status => 500 })
-          return false
-        else
-          flash[:error] = l(error.to_sym)
-          redirect_to signin_url
-        end
+        # Keep the origin, so the retry redirects correctly
+        origin = request.env['rack.session']['omniauth.origin'].presence
+        flash[:error] = l(error.to_sym, default: l(:notice_account_invalid_credentials))
+        redirect_to origin.present? ? signin_url(back_url: origin) : signin_url
       end
 
       def logout_with_oidc
