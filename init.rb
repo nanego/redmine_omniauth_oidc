@@ -34,7 +34,8 @@ Redmine::Plugin.register :redmine_omniauth_oidc do
              'auto_provision'        => '',
              'auto_provision_active' => '',
              'oidc_claim_firstname'  => 'given_name',
-             'oidc_claim_lastname'   => 'family_name'
+             'oidc_claim_lastname'   => 'family_name',
+             'bypass_twofa'          => ''
            },
            :partial => 'settings/omniauth_oidc_settings'
 end

@@ -76,7 +76,9 @@ module RedmineOmniauthOidc
           id_token = auth.dig('credentials', 'id_token').to_s
 
           successful_authentication(user)
-          # Must be set AFTER successful_authentication because it calls reset_session
+          # Must be set AFTER successful_authentication because it calls reset_session.
+          # OIDC users are already MFA-authenticated server-side: optionally skip Redmine's 2FA enforcement.
+          session.delete(:must_activate_twofa) if oidc_settings['bypass_twofa'] == '1'
           session[:logged_in_with_oidc] = true
           session[:oidc_end_session_endpoint] = end_session_endpoint if end_session_endpoint.present?
           session[:oidc_id_token] = id_token if id_token.present?

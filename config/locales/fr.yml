@@ -24,3 +24,5 @@ fr:
   error_oidc_access_denied: L'accès a été refusé par le fournisseur d'identité OIDC.
   error_oidc_invalid_credentials: Identifiants invalides retournés par le fournisseur OIDC.
   error_oidc_unknown: Une erreur inconnue s'est produite lors de l'authentification OIDC.
+  label_oidc_bypass_twofa: Désactiver l'obligation 2FA Redmine pour les connexions OIDC
+  notice_oidc_bypass_twofa_hint: "Si activé, les utilisateurs connectés via OIDC ne seront pas obligés de configurer ou saisir un code 2FA Redmine (ils sont déjà authentifiés côté fournisseur OIDC)."

@@ -101,6 +101,13 @@
 </p>
 
 <p>
+  <label><%= l(:label_oidc_bypass_twofa) %></label>
+  <%= check_box_tag 'settings[bypass_twofa]', '1', @settings['bypass_twofa'] == '1' %>
+  <br/>
+  <em><%= l(:notice_oidc_bypass_twofa_hint) %></em>
+</p>
+
+<p>
   <label><%= l(:label_oidc_claim_firstname) %></label>
   <%= select_tag 'settings[oidc_claim_firstname]',
         options_for_select(

@@ -24,3 +24,5 @@ en:
   error_oidc_access_denied: Access was denied by the OIDC identity provider.
   error_oidc_invalid_credentials: Invalid credentials returned by the OIDC provider.
   error_oidc_unknown: An unknown error occurred during OIDC authentication.
+  label_oidc_bypass_twofa: Bypass Redmine 2FA requirement for OIDC logins
+  notice_oidc_bypass_twofa_hint: "If enabled, users logging in via OIDC will not be required to configure or enter a Redmine 2FA code (they are already authenticated on the OIDC provider side)."

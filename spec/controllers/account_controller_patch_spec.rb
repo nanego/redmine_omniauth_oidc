@@ -83,6 +83,31 @@ describe AccountController, type: :controller do
       end
     end
 
+    context "2FA bypass" do
+      before { Setting.twofa = '2' }
+
+      context "when bypass_twofa is enabled" do
+        before { Setting["plugin_redmine_omniauth_oidc"] = Setting["plugin_redmine_omniauth_oidc"].merge("bypass_twofa" => "1") }
+
+        it "clears the must_activate_twofa session flag after OIDC login" do
+          request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
+          get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+          expect(session[:must_activate_twofa]).to be_nil
+          expect(response).to redirect_to('/my/page')
+        end
+      end
+
+      context "when bypass_twofa is disabled" do
+        before { Setting["plugin_redmine_omniauth_oidc"] = Setting["plugin_redmine_omniauth_oidc"].merge("bypass_twofa" => "") }
+
+        it "keeps the must_activate_twofa session flag after OIDC login" do
+          request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
+          get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+          expect(session[:must_activate_twofa]).to eq('1')
+        end
+      end
+    end
+
     it "should redirect to /login if user not found and auto_provision is disabled" do
       Setting["plugin_redmine_omniauth_oidc"]["auto_provision"] = ''
       request.env["omniauth.auth"] = oidc_auth_hash(email: "nobody@example.com")
