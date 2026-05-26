@@ -56,6 +56,40 @@ describe "RedmineOmniauthOidc" do
     end
   end
 
+  context "#oidc_extra_authorize_params" do
+    it "returns an empty hash when not set" do
+      Setting["plugin_redmine_omniauth_oidc"]["extra_authorize_params"] = ''
+      expect(RedmineOmniauthOidc.oidc_extra_authorize_params).to eq({})
+    end
+
+    it "parses a single key=value pair" do
+      Setting["plugin_redmine_omniauth_oidc"]["extra_authorize_params"] = 'prompt=login'
+      expect(RedmineOmniauthOidc.oidc_extra_authorize_params).to eq({ 'prompt' => 'login' })
+    end
+
+    it "preserves a dotted key" do
+      Setting["plugin_redmine_omniauth_oidc"]["extra_authorize_params"] = 'vendor.option=0'
+      expect(RedmineOmniauthOidc.oidc_extra_authorize_params).to eq({ 'vendor.option' => '0' })
+    end
+
+    it "parses multiple pairs separated by newlines or &" do
+      Setting["plugin_redmine_omniauth_oidc"]["extra_authorize_params"] = "prompt=login\nui_locales=fr&claims_locales=fr"
+      expect(RedmineOmniauthOidc.oidc_extra_authorize_params).to eq(
+        { 'prompt' => 'login', 'ui_locales' => 'fr', 'claims_locales' => 'fr' }
+      )
+    end
+
+    it "trims whitespace and ignores blank keys" do
+      Setting["plugin_redmine_omniauth_oidc"]["extra_authorize_params"] = "  foo = bar \n\n =orphan\n"
+      expect(RedmineOmniauthOidc.oidc_extra_authorize_params).to eq({ 'foo' => 'bar' })
+    end
+
+    it "keeps a key with an empty value" do
+      Setting["plugin_redmine_omniauth_oidc"]["extra_authorize_params"] = 'flag='
+      expect(RedmineOmniauthOidc.oidc_extra_authorize_params).to eq({ 'flag' => '' })
+    end
+  end
+
   context "dynamic full host" do
     it "should return host name from setting if no url" do
       Setting["host_name"] = "http://redmine.example.com"

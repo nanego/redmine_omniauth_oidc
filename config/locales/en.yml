@@ -26,3 +26,5 @@ en:
   error_oidc_unknown: An unknown error occurred during OIDC authentication.
   label_oidc_bypass_twofa: Bypass Redmine 2FA requirement for OIDC logins
   notice_oidc_bypass_twofa_hint: "If enabled, users logging in via OIDC will not be required to configure or enter a Redmine 2FA code (they are already authenticated on the OIDC provider side)."
+  label_oidc_extra_authorize_params: Extra authorization parameters
+  notice_oidc_extra_authorize_params_hint: "Parameters appended as-is to the authorization request sent to the OIDC provider, as key=value (one per line, or separated by &). Useful for provider-specific options. Example: prompt=login"

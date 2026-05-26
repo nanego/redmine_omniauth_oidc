@@ -1,21 +1,25 @@
 # redmine_omniauth_oidc
 
-OpenID Connect (OIDC) authentication plugin for Redmine. Compatible with any standard OIDC provider (Keycloak, Azure AD, etc.).
+OpenID Connect (OIDC) authentication plugin for Redmine. Compatible with any standard OIDC provider (Keycloak, Azure AD,
+etc.).
 
 ## Test status
 
-| Plugin branch | Redmine version | Test status |
-|---------------|-----------------|-------------|
-| master | 6.1.2 | [![6.1.2][1]][3] |
-| master | master | [![master][2]][3] |
+| Plugin branch | Redmine version | Test status       |
+|---------------|-----------------|-------------------|
+| master        | 6.1.2           | [![6.1.2][1]][3]  |
+| master        | master          | [![master][2]][3] |
 
 [1]: https://github.com/nanego/redmine_omniauth_oidc/actions/workflows/6_1_2.yml/badge.svg
+
 [2]: https://github.com/nanego/redmine_omniauth_oidc/actions/workflows/master.yml/badge.svg
+
 [3]: https://github.com/nanego/redmine_omniauth_oidc/actions
 
 ## Dependencies
 
-This plugin requires [redmine_base_deface](https://github.com/jbbarth/redmine_base_deface) to be installed (used to inject the OIDC login button into Redmine views).
+This plugin requires [redmine_base_deface](https://github.com/jbbarth/redmine_base_deface) to be installed (used to
+inject the OIDC login button into Redmine views).
 
 ## Installation
 
@@ -35,16 +39,17 @@ This plugin requires [redmine_base_deface](https://github.com/jbbarth/redmine_ba
 
 ## Settings
 
-| Setting | Description |
-|---------|-------------|
-| Enabled | Show the OIDC login button |
-| Issuer URL | OIDC provider base URL, e.g. `https://sso.example.com/oidc` |
-| Client ID | Application client identifier |
-| Client Secret | OIDC client secret |
-| Scopes | Default: `openid profile email` |
-| Replace Redmine login | Hide the native Redmine login form |
-| Auto-provisioning | Automatically create a Redmine account on first login |
-| Active accounts | Auto-created accounts are immediately active (otherwise: pending admin approval) |
+| Setting                        | Description                                                                                                    |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------|
+| Enabled                        | Show the OIDC login button                                                                                     |
+| Issuer URL                     | OIDC provider base URL, e.g. `https://sso.example.com/oidc`                                                    |
+| Client ID                      | Application client identifier                                                                                  |
+| Client Secret                  | OIDC client secret                                                                                             |
+| Scopes                         | Default: `openid profile email`                                                                                |
+| Replace Redmine login          | Hide the native Redmine login form                                                                             |
+| Auto-provisioning              | Automatically create a Redmine account on first login                                                          |
+| Active accounts                | Auto-created accounts are immediately active (otherwise: pending admin approval)                               |
+| Extra authorization parameters | Provider-specific `key=value` params (one per line, or separated by `&`) appended to the authorization request |
 
 ## YAML configuration (optional, recommended in production)
 
@@ -61,15 +66,18 @@ oidc_client_id: my-client-id
 oidc_client_secret: my-client-secret
 ```
 
-When this file exists, the three corresponding fields become read-only in the admin UI. Restart Redmine after any change.
+When this file exists, the three corresponding fields become read-only in the admin UI. Restart Redmine after any
+change.
 
 ## User matching
 
 On login, the plugin looks up the user in this order:
+
 1. by `email` claim → `User.mail`
 2. by `uid` claim → `User.login`
 3. by `preferred_username` claim → `User.login`
 
 ## SSO logout
 
-If the provider exposes an `end_session_endpoint` in its discovery document, Redmine logout will automatically redirect to that endpoint.
+If the provider exposes an `end_session_endpoint` in its discovery document, Redmine logout will automatically redirect
+to that endpoint.

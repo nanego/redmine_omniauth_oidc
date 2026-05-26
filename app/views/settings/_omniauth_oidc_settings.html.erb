@@ -128,3 +128,10 @@
   <br/>
   <em><%= l(:notice_oidc_claim_hint) %></em>
 </p>
+
+<p>
+  <label><%= l(:label_oidc_extra_authorize_params) %></label>
+  <%= text_area_tag 'settings[extra_authorize_params]', @settings['extra_authorize_params'], :rows => 3, :cols => 58 %>
+  <br/>
+  <em><%= l(:notice_oidc_extra_authorize_params_hint) %></em>
+</p>

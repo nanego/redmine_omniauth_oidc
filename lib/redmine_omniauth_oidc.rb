@@ -84,5 +84,18 @@ module RedmineOmniauthOidc
     def oidc_claim_lastname
       settings_hash['oidc_claim_lastname'].presence || 'family_name'
     end
+
+    # Extra parameters appended to the OIDC authorization request, configured
+    # as a free-form string by the administrator (one `key=value` per line, or
+    # separated by `&`).
+    def oidc_extra_authorize_params
+      settings_hash['extra_authorize_params'].to_s.split(/[\n&]+/).filter_map do |pair|
+        key, value = pair.split('=', 2)
+        key = key.to_s.strip
+        next if key.empty?
+
+        [key, value.to_s.strip]
+      end.to_h
+    end
   end
 end
