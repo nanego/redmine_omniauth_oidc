@@ -22,6 +22,7 @@ fr:
   text_logout_from_oidc: déconnecter du fournisseur SSO
   text_full_logout_proposal_oidc: Vous pouvez %{value} avant d'essayer un autre identifiant.
   error_oidc_access_denied: L'accès a été refusé par le fournisseur d'identité OIDC.
+  error_oidc_unmet_authentication_requirements: Ce mode de connexion exige un niveau d'authentification supérieur (par exemple une carte). Votre méthode ne le satisfait pas.
   error_oidc_invalid_credentials: Identifiants invalides retournés par le fournisseur OIDC.
   error_oidc_unknown: Une erreur inconnue s'est produite lors de l'authentification OIDC.
   label_oidc_bypass_twofa: Désactiver l'obligation 2FA Redmine pour les connexions OIDC

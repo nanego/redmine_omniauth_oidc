@@ -127,5 +127,15 @@ module RedmineOmniauthOidc
 
       second_button_acr_values
     end
+
+    # Builds the OIDC `claims` request parameter marking the requested acr as
+    # *essential* (mandatory). `acr_values` alone is defined as "voluntary" by
+    # the OIDC spec (§3.1.2.1) and providers may ignore it.
+    def essential_acr_claims(acr_values)
+      values = acr_values.to_s.split
+      return {} if values.empty?
+
+      { 'claims' => JSON.generate('id_token' => { 'acr' => { 'essential' => true, 'values' => values } }) }
+    end
   end
 end

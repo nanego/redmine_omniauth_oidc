@@ -22,6 +22,7 @@ en:
   text_logout_from_oidc: logout from SSO provider
   text_full_logout_proposal_oidc: You may want to %{value} before trying another username.
   error_oidc_access_denied: Access was denied by the OIDC identity provider.
+  error_oidc_unmet_authentication_requirements: This login method requires a higher authentication level (for example a smartcard). Your method does not meet it.
   error_oidc_invalid_credentials: Invalid credentials returned by the OIDC provider.
   error_oidc_unknown: An unknown error occurred during OIDC authentication.
   label_oidc_bypass_twofa: Bypass Redmine 2FA requirement for OIDC logins

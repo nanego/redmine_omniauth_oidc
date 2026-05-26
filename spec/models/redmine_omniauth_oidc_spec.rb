@@ -139,6 +139,25 @@ describe "RedmineOmniauthOidc" do
         expect(RedmineOmniauthOidc.acr_values_for_request(marker => '1')).to be_nil
       end
     end
+
+    describe "#essential_acr_claims" do
+      it "builds an essential acr id_token claim" do
+        expect(RedmineOmniauthOidc.essential_acr_claims('eidas3')).to eq(
+          'claims' => '{"id_token":{"acr":{"essential":true,"values":["eidas3"]}}}'
+        )
+      end
+
+      it "supports multiple space-separated values" do
+        expect(RedmineOmniauthOidc.essential_acr_claims('eidas2 eidas3')).to eq(
+          'claims' => '{"id_token":{"acr":{"essential":true,"values":["eidas2","eidas3"]}}}'
+        )
+      end
+
+      it "returns an empty hash when blank or nil" do
+        expect(RedmineOmniauthOidc.essential_acr_claims('')).to eq({})
+        expect(RedmineOmniauthOidc.essential_acr_claims(nil)).to eq({})
+      end
+    end
   end
 
   context "dynamic full host" do

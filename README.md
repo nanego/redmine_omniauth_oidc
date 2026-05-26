@@ -86,5 +86,5 @@ to that endpoint.
 ## Second login button (authentication level)
 
 When enabled, a second button is shown on the standard login page (alongside the regular OIDC button). Clicking it
-sends the configured `acr_values` to the provider, requesting a minimum authentication level (for instance a
-smartcard-based login).
+requests a minimum authentication level from the provider (for instance a smartcard-based login). The first button
+stays unconstrained.
