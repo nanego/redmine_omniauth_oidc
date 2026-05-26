@@ -36,7 +36,10 @@ Redmine::Plugin.register :redmine_omniauth_oidc do
              'oidc_claim_firstname'    => 'given_name',
              'oidc_claim_lastname'     => 'family_name',
              'bypass_twofa'            => '',
-             'extra_authorize_params'  => ''
+             'extra_authorize_params'  => '',
+             'second_button_enabled'    => '',
+             'second_button_label'      => '',
+             'second_button_acr_values' => ''
            },
            :partial => 'settings/omniauth_oidc_settings'
 end

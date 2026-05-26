@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module RedmineOmniauthOidc
+  # Marker param sent by the optional second login button (see below).
+  SECOND_BUTTON_PARAM = 'oidc_acr'
+
   class << self
     def settings_hash
       Setting["plugin_redmine_omniauth_oidc"]
@@ -96,6 +99,33 @@ module RedmineOmniauthOidc
 
         [key, value.to_s.strip]
       end.to_h
+    end
+
+    # Optional second login button that requests a specific minimum
+    # authentication level (acr_values) from the OIDC provider.
+    def second_button_enabled?
+      settings_hash['second_button_enabled'] == '1'
+    end
+
+    def second_button_label
+      settings_hash['second_button_label'].to_s
+    end
+
+    def second_button_acr_values
+      settings_hash['second_button_acr_values'].to_s.strip
+    end
+
+    # True when the second button can be displayed
+    def second_button_available?
+      second_button_enabled? && second_button_acr_values.present?
+    end
+
+    # Returns the configured acr_values floor
+    def acr_values_for_request(params)
+      return nil unless second_button_available?
+      return nil if params.blank? || params[SECOND_BUTTON_PARAM].blank?
+
+      second_button_acr_values
     end
   end
 end

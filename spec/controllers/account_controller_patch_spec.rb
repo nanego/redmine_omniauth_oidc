@@ -44,6 +44,35 @@ describe AccountController, type: :controller do
     end
   end
 
+  context "GET /login second button", :render_views => true do
+    render_views
+
+    before do
+      Setting["plugin_redmine_omniauth_oidc"]["second_button_enabled"]    = '1'
+      Setting["plugin_redmine_omniauth_oidc"]["second_button_label"]      = 'Sign in with smartcard'
+      Setting["plugin_redmine_omniauth_oidc"]["second_button_acr_values"] = 'eidas3'
+    end
+
+    it "renders a second button posting the acr marker when configured" do
+      get :login
+      assert_select '#oidc-login form[action*=?]', 'oidc_acr=1'
+      assert_select '#oidc-login button[type=submit] svg.oidc-smartcard-icon'
+      assert_select '#oidc-login button[type=submit]', /Sign in with smartcard/
+    end
+
+    it "does not render the second button when disabled" do
+      Setting["plugin_redmine_omniauth_oidc"]["second_button_enabled"] = ''
+      get :login
+      assert_select '#oidc-login form[action*=?]', 'oidc_acr=1', :count => 0
+    end
+
+    it "does not render the second button when no acr value is configured" do
+      Setting["plugin_redmine_omniauth_oidc"]["second_button_acr_values"] = ''
+      get :login
+      assert_select '#oidc-login form[action*=?]', 'oidc_acr=1', :count => 0
+    end
+  end
+
   context "login_with_oidc_callback" do
     it "should redirect to /my/page after successful login by email" do
       request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")

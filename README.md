@@ -50,6 +50,7 @@ inject the OIDC login button into Redmine views).
 | Auto-provisioning              | Automatically create a Redmine account on first login                                                          |
 | Active accounts                | Auto-created accounts are immediately active (otherwise: pending admin approval)                               |
 | Extra authorization parameters | Provider-specific `key=value` params (one per line, or separated by `&`) appended to the authorization request |
+| Second login button            | Optional extra button requesting a minimum authentication level (`acr_values`), e.g. a smartcard login. Configure its label and the `acr_values` to send. The first button stays unconstrained. |
 
 ## YAML configuration (optional, recommended in production)
 
@@ -81,3 +82,9 @@ On login, the plugin looks up the user in this order:
 
 If the provider exposes an `end_session_endpoint` in its discovery document, Redmine logout will automatically redirect
 to that endpoint.
+
+## Second login button (authentication level)
+
+When enabled, a second button is shown on the standard login page (alongside the regular OIDC button). Clicking it
+sends the configured `acr_values` to the provider, requesting a minimum authentication level (for instance a
+smartcard-based login).

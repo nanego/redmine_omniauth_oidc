@@ -135,3 +135,26 @@
   <br/>
   <em><%= l(:notice_oidc_extra_authorize_params_hint) %></em>
 </p>
+
+<fieldset class="box">
+  <legend><%= l(:label_oidc_second_button_section) %></legend>
+
+  <p>
+    <label><%= l(:label_oidc_second_button_enabled) %></label>
+    <%= check_box_tag 'settings[second_button_enabled]', '1', @settings['second_button_enabled'] == '1' %>
+    <br/>
+    <em><%= l(:notice_oidc_second_button_hint) %></em>
+  </p>
+
+  <p>
+    <label><%= l(:label_oidc_second_button_label) %></label>
+    <%= text_field_tag 'settings[second_button_label]', @settings['second_button_label'], :size => 60 %>
+  </p>
+
+  <p>
+    <label><%= l(:label_oidc_second_button_acr_values) %></label>
+    <%= text_field_tag 'settings[second_button_acr_values]', @settings['second_button_acr_values'], :size => 60 %>
+    <br/>
+    <em><%= l(:notice_oidc_second_button_acr_values_hint) %></em>
+  </p>
+</fieldset>

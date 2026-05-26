@@ -28,3 +28,10 @@ fr:
   notice_oidc_bypass_twofa_hint: "Si activé, les utilisateurs connectés via OIDC ne seront pas obligés de configurer ou saisir un code 2FA Redmine (ils sont déjà authentifiés côté fournisseur OIDC)."
   label_oidc_extra_authorize_params: Paramètres d'autorisation supplémentaires
   notice_oidc_extra_authorize_params_hint: "Paramètres ajoutés tels quels à la requête d'autorisation envoyée au fournisseur OIDC, sous la forme clé=valeur (un par ligne, ou séparés par &). Utile pour des options propres au fournisseur. Exemple : prompt=login"
+  label_login_with_oidc_second_button: Se connecter avec sa carte
+  label_oidc_second_button_section: Second bouton de connexion (niveau d'authentification)
+  label_oidc_second_button_enabled: Activer un second bouton de connexion
+  label_oidc_second_button_label: Libellé du second bouton
+  label_oidc_second_button_acr_values: "Niveau d'authentification demandé (acr_values)"
+  notice_oidc_second_button_hint: "Ajoute un second bouton sur la page de connexion qui demande au fournisseur OIDC un niveau d'authentification minimal (paramètre acr_values). Le premier bouton reste sans contrainte."
+  notice_oidc_second_button_acr_values_hint: "Valeur acr_values envoyée au fournisseur lors d'un clic sur le second bouton. Voir la documentation de votre fournisseur pour les valeurs disponibles."
