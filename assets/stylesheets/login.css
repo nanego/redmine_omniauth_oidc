@@ -10,8 +10,7 @@
     vertical-align: top;
 }
 
-#oidc-login input[type="submit"],
-#oidc-login button.oidc-second-button {
+#oidc-login input[type="submit"] {
     padding-left: 1em;
     padding-right: 1em;
     -moz-border-radius: 20px;
@@ -25,30 +24,11 @@
     font-weight: bold;
 }
 
-#oidc-login button.oidc-second-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    line-height: 1;
-    cursor: pointer;
-    background-color: #229e43;
-}
-
-#oidc-login .oidc-smartcard-icon {
-    flex: 0 0 auto;
-    display: block;
-}
-
 #oidc-login input[type="submit"]:hover {
     background-color: #1a4aad;
 }
 
-#oidc-login button.oidc-second-button:hover {
-    background-color: #28b54d;
-}
-
-#oidc-login input[type="submit"]:active,
-#oidc-login button.oidc-second-button:active {
+#oidc-login input[type="submit"]:active {
     position: relative;
     top: 1px;
 }

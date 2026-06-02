@@ -13,9 +13,10 @@ setup_proc = Proc.new do |env|
   # Provider-specific parameters appended to the authorization request
   strategy.options[:extra_authorize_params] = RedmineOmniauthOidc.oidc_extra_authorize_params
 
-  # Optional second login button: request a minimum authentication level when
-  # the request carries the second-button marker.
-  acr_values = RedmineOmniauthOidc.acr_values_for_request(Rack::Request.new(env).params)
+  # Optional minimum authentication level (acr_values) requested on every login.
+  # Sent both as acr_values and as an *essential* claim (acr_values alone is
+  # "voluntary" per the OIDC spec and may be ignored by the provider).
+  acr_values = RedmineOmniauthOidc.oidc_acr_values
   if acr_values.present?
     strategy.options[:acr_values] = acr_values
     strategy.options[:extra_authorize_params] =

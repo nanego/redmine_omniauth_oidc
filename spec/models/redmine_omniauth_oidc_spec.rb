@@ -90,53 +90,16 @@ describe "RedmineOmniauthOidc" do
     end
   end
 
-  context "second login button" do
-    before do
-      Setting["plugin_redmine_omniauth_oidc"]["second_button_enabled"]    = '1'
-      Setting["plugin_redmine_omniauth_oidc"]["second_button_label"]      = 'Sign in with smartcard'
-      Setting["plugin_redmine_omniauth_oidc"]["second_button_acr_values"] = 'eidas3'
-    end
-
-    describe "#second_button_available?" do
-      it "is true when enabled and an acr value is configured" do
-        expect(RedmineOmniauthOidc.second_button_available?).to be_truthy
+  context "authentication level (acr_values)" do
+    describe "#oidc_acr_values" do
+      it "returns the configured value, trimmed" do
+        Setting["plugin_redmine_omniauth_oidc"]["oidc_acr_values"] = '  eidas3 '
+        expect(RedmineOmniauthOidc.oidc_acr_values).to eq 'eidas3'
       end
 
-      it "is false when disabled" do
-        Setting["plugin_redmine_omniauth_oidc"]["second_button_enabled"] = ''
-        expect(RedmineOmniauthOidc.second_button_available?).to be_falsey
-      end
-
-      it "is false when no acr value is configured" do
-        Setting["plugin_redmine_omniauth_oidc"]["second_button_acr_values"] = ''
-        expect(RedmineOmniauthOidc.second_button_available?).to be_falsey
-      end
-    end
-
-    describe "#acr_values_for_request" do
-      let(:marker) { RedmineOmniauthOidc::SECOND_BUTTON_PARAM }
-
-      it "returns the configured acr when the marker param is present" do
-        expect(RedmineOmniauthOidc.acr_values_for_request(marker => '1')).to eq 'eidas3'
-      end
-
-      it "returns nil without the marker param" do
-        expect(RedmineOmniauthOidc.acr_values_for_request('origin' => '/')).to be_nil
-      end
-
-      it "returns nil for blank params" do
-        expect(RedmineOmniauthOidc.acr_values_for_request({})).to be_nil
-        expect(RedmineOmniauthOidc.acr_values_for_request(nil)).to be_nil
-      end
-
-      it "returns nil when the button is disabled even if the marker is present" do
-        Setting["plugin_redmine_omniauth_oidc"]["second_button_enabled"] = ''
-        expect(RedmineOmniauthOidc.acr_values_for_request(marker => '1')).to be_nil
-      end
-
-      it "returns nil when no acr value is configured even if the marker is present" do
-        Setting["plugin_redmine_omniauth_oidc"]["second_button_acr_values"] = ''
-        expect(RedmineOmniauthOidc.acr_values_for_request(marker => '1')).to be_nil
+      it "returns an empty string when not configured" do
+        Setting["plugin_redmine_omniauth_oidc"]["oidc_acr_values"] = ''
+        expect(RedmineOmniauthOidc.oidc_acr_values).to eq ''
       end
     end
 

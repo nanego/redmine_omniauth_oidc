@@ -6,10 +6,6 @@ module RedmineOmniauthOidc::AccountHelperPatch
   def label_for_oidc_login
     RedmineOmniauthOidc.label_login_with_oidc.presence || l(:label_login_with_oidc)
   end
-
-  def label_for_oidc_second_button
-    RedmineOmniauthOidc.second_button_label.presence || l(:label_login_with_oidc_second_button)
-  end
 end
 
 AccountHelper.prepend RedmineOmniauthOidc::AccountHelperPatch

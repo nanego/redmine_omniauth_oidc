@@ -50,7 +50,7 @@ inject the OIDC login button into Redmine views).
 | Auto-provisioning              | Automatically create a Redmine account on first login                                                          |
 | Active accounts                | Auto-created accounts are immediately active (otherwise: pending admin approval)                               |
 | Extra authorization parameters | Provider-specific `key=value` params (one per line, or separated by `&`) appended to the authorization request |
-| Second login button            | Optional extra button requesting a minimum authentication level (`acr_values`), e.g. a smartcard login. Configure its label and the `acr_values` to send. The first button stays unconstrained. |
+| Requested authentication level | Optional minimum authentication level (`acr_values`) requested on every login, e.g. a smartcard level. Sent both as `acr_values` and as an essential claim. Leave blank for no constraint. |
 
 ## YAML configuration (optional, recommended in production)
 

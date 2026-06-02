@@ -29,10 +29,5 @@ en:
   notice_oidc_bypass_twofa_hint: "If enabled, users logging in via OIDC will not be required to configure or enter a Redmine 2FA code (they are already authenticated on the OIDC provider side)."
   label_oidc_extra_authorize_params: Extra authorization parameters
   notice_oidc_extra_authorize_params_hint: "Parameters appended as-is to the authorization request sent to the OIDC provider, as key=value (one per line, or separated by &). Useful for provider-specific options. Example: prompt=login"
-  label_login_with_oidc_second_button: Sign in with smartcard
-  label_oidc_second_button_section: Second login button (authentication level)
-  label_oidc_second_button_enabled: Enable a second login button
-  label_oidc_second_button_label: Second button label
-  label_oidc_second_button_acr_values: "Requested authentication level (acr_values)"
-  notice_oidc_second_button_hint: "Adds a second button on the login page that requests a minimum authentication level (acr_values) from the OIDC provider. The first button stays unconstrained."
-  notice_oidc_second_button_acr_values_hint: "acr_values value sent to the provider when the second button is clicked. See your provider's documentation for available values."
+  label_oidc_acr_values: "Requested authentication level (acr_values)"
+  notice_oidc_acr_values_hint: "Minimum authentication level requested from the OIDC provider on every login (acr_values parameter, also sent as an essential claim). Leave blank for no constraint. See your provider's documentation for available values."
