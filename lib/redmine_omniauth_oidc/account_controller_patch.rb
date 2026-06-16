@@ -105,8 +105,11 @@ module RedmineOmniauthOidc
           id_token        = session[:oidc_id_token].presence
           logout_user
           if end_session_url.present?
-            end_session_url = "#{end_session_url}?id_token_hint=#{CGI.escape(id_token)}" if id_token.present?
-            redirect_to end_session_url, :allow_other_host => true
+            query = {}
+            query[:id_token_hint] = id_token if id_token.present?
+            query[:post_logout_redirect_uri] = oidc_post_logout_redirect_uri
+            separator = end_session_url.include?('?') ? '&' : '?'
+            redirect_to "#{end_session_url}#{separator}#{query.to_query}", :allow_other_host => true
           else
             redirect_to home_url
           end
@@ -119,6 +122,12 @@ module RedmineOmniauthOidc
 
       def oidc_settings
         RedmineOmniauthOidc.settings_hash
+      end
+
+      # Where the OIDC provider sends the user back after RP-initiated logout.
+      # Configurable (must be registered with the provider); defaults to home.
+      def oidc_post_logout_redirect_uri
+        oidc_settings['oidc_post_logout_redirect_uri'].presence || home_url
       end
 
       # Look up an existing Redmine user from the OIDC auth hash.

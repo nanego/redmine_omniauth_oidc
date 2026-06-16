@@ -142,3 +142,10 @@
   <br/>
   <em><%= l(:notice_oidc_acr_values_hint) %></em>
 </p>
+
+<p>
+  <label><%= l(:label_oidc_post_logout_redirect_uri) %></label>
+  <%= text_field_tag 'settings[oidc_post_logout_redirect_uri]', @settings['oidc_post_logout_redirect_uri'], :size => 80 %>
+  <br/>
+  <em><%= l(:notice_oidc_post_logout_redirect_uri_hint) %></em>
+</p>

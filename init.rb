@@ -37,7 +37,8 @@ Redmine::Plugin.register :redmine_omniauth_oidc do
              'oidc_claim_lastname'     => 'family_name',
              'bypass_twofa'            => '',
              'extra_authorize_params'  => '',
-             'oidc_acr_values'         => ''
+             'oidc_acr_values'         => '',
+             'oidc_post_logout_redirect_uri' => ''
            },
            :partial => 'settings/omniauth_oidc_settings'
 end

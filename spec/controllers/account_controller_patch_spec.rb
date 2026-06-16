@@ -163,11 +163,31 @@ describe AccountController, type: :controller do
       expect(response).to redirect_to(home_url)
     end
 
-    it "should redirect to end_session_endpoint if logged in with OIDC" do
+    it "should redirect to end_session_endpoint with post_logout_redirect_uri if logged in with OIDC" do
       session[:logged_in_with_oidc] = true
       session[:oidc_end_session_endpoint] = "https://sso.example.com/oidc/myapp/logout"
       get :logout
-      expect(response).to redirect_to("https://sso.example.com/oidc/myapp/logout")
+      expect(response.location).to start_with("https://sso.example.com/oidc/myapp/logout?")
+      expect(response.location).to include("post_logout_redirect_uri=#{CGI.escape(home_url)}")
+    end
+
+    it "includes id_token_hint when an id_token is present" do
+      session[:logged_in_with_oidc] = true
+      session[:oidc_end_session_endpoint] = "https://sso.example.com/oidc/myapp/logout"
+      session[:oidc_id_token] = "tok-123"
+      get :logout
+      expect(response.location).to include("id_token_hint=tok-123")
+      expect(response.location).to include("post_logout_redirect_uri=")
+    end
+
+    it "uses the configured post_logout_redirect_uri when set" do
+      Setting["plugin_redmine_omniauth_oidc"]["oidc_post_logout_redirect_uri"] = "https://app.example.com/done"
+      session[:logged_in_with_oidc] = true
+      session[:oidc_end_session_endpoint] = "https://sso.example.com/oidc/myapp/logout"
+      get :logout
+      expect(response.location).to include("post_logout_redirect_uri=#{CGI.escape('https://app.example.com/done')}")
+    ensure
+      Setting["plugin_redmine_omniauth_oidc"]["oidc_post_logout_redirect_uri"] = ""
     end
 
     it "should redirect to home if logged in with OIDC but no end_session_endpoint" do

@@ -31,3 +31,5 @@ en:
   notice_oidc_extra_authorize_params_hint: "Parameters appended as-is to the authorization request sent to the OIDC provider, as key=value (one per line, or separated by &). Useful for provider-specific options. Example: prompt=login"
   label_oidc_acr_values: "Requested authentication level (acr_values)"
   notice_oidc_acr_values_hint: "Minimum authentication level requested from the OIDC provider on every login (acr_values parameter, also sent as an essential claim). Leave blank for no constraint. See your provider's documentation for available values."
+  label_oidc_post_logout_redirect_uri: "Post-logout redirect URI"
+  notice_oidc_post_logout_redirect_uri_hint: "URL the provider redirects to after logout (post_logout_redirect_uri parameter of the end-session endpoint). Must be registered with the provider. Leave blank to return to the Redmine home page."
