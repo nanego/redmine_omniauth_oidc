@@ -7,10 +7,10 @@ etc.).
 
 | Plugin branch | Redmine version | Test status       |
 |---------------|-----------------|-------------------|
-| master        | 6.1.2           | [![6.1.2][1]][3]  |
+| master        | 6.1.3           | [![6.1.3][1]][3]  |
 | master        | master          | [![master][2]][3] |
 
-[1]: https://github.com/nanego/redmine_omniauth_oidc/actions/workflows/6_1_2.yml/badge.svg
+[1]: https://github.com/nanego/redmine_omniauth_oidc/actions/workflows/6_1_3.yml/badge.svg
 
 [2]: https://github.com/nanego/redmine_omniauth_oidc/actions/workflows/master.yml/badge.svg
 
