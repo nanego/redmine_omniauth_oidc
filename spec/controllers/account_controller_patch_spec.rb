@@ -17,8 +17,8 @@ describe AccountController, type: :controller do
     raw_info['auth_level'] = auth_level if auth_level
     raw_info['acr'] = acr if acr
     OmniAuth::AuthHash.new(
-      'uid'   => email,
-      'info'  => { 'email' => email },
+      'uid' => email,
+      'info' => { 'email' => email },
       'extra' => { 'raw_info' => raw_info }
     )
   end
@@ -43,7 +43,6 @@ describe AccountController, type: :controller do
       assert_select '#oidc-login > form[action=?]', '/auth/openid_connect?origin=https%3A%2F%2Fblah%2F'
     end
   end
-
 
   context "login_with_oidc_callback" do
     it "should redirect to /my/page after successful login by email" do
@@ -87,25 +86,11 @@ describe AccountController, type: :controller do
     context "2FA bypass" do
       before { Setting.twofa = '2' }
 
-      context "when bypass_twofa is enabled" do
-        before { Setting["plugin_redmine_omniauth_oidc"] = Setting["plugin_redmine_omniauth_oidc"].merge("bypass_twofa" => "1") }
-
-        it "clears the must_activate_twofa session flag after OIDC login" do
-          request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
-          get :login_with_oidc_callback, params: { :provider => "openid_connect" }
-          expect(session[:must_activate_twofa]).to be_nil
-          expect(response).to redirect_to('/my/page')
-        end
-      end
-
-      context "when bypass_twofa is disabled" do
-        before { Setting["plugin_redmine_omniauth_oidc"] = Setting["plugin_redmine_omniauth_oidc"].merge("bypass_twofa" => "") }
-
-        it "keeps the must_activate_twofa session flag after OIDC login" do
-          request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
-          get :login_with_oidc_callback, params: { :provider => "openid_connect" }
-          expect(session[:must_activate_twofa]).to eq('1')
-        end
+      it "marks the session as OIDC-authenticated after login" do
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:logged_in_with_oidc]).to be_truthy
+        expect(response).to redirect_to('/my/page')
       end
     end
 

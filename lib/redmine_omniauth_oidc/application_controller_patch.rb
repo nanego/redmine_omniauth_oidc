@@ -6,6 +6,16 @@ module RedmineOmniauthOidc
   module ApplicationControllerPatch
     extend ActiveSupport::Concern
 
+    # OIDC users are MFA-authenticated by the identity provider. When the bypass
+    # is enabled, never force Redmine's own 2FA enrolment on an OIDC session.
+    def check_twofa_activation
+      if session[:logged_in_with_oidc] &&
+         RedmineOmniauthOidc.settings_hash['bypass_twofa'] == '1'
+        session.delete(:must_activate_twofa)
+      end
+      super
+    end
+
     def require_login
       if !User.current.logged?
         # Extract only the basic url parameters on non-GET requests
