@@ -46,6 +46,14 @@ module RedmineOmniauthOidc
 
         user = find_user_from_oidc_auth(auth)
 
+        # An existing account that is not active (locked, registered, ...) must
+        # not be allowed to log in
+        if user && !user.active?
+          logger.warn "Blocked OIDC login for non-active account '#{user.login}' " \
+                      "(status=#{user.status}) from #{request.remote_ip} at #{Time.now.utc}"
+          return deny_oidc_login
+        end
+
         if user.blank? && oidc_settings["auto_provision"] == '1'
           user = create_user_from_oidc(auth)
           if user.blank?
@@ -57,14 +65,7 @@ module RedmineOmniauthOidc
         if user.blank?
           logger.warn "Failed OIDC login for uid='#{auth['uid']}' / " \
                       "email='#{auth.dig('info', 'email')}' from #{request.remote_ip} at #{Time.now.utc}"
-          error = l(:notice_account_invalid_credentials).sub(/\.$/, '')
-          if oidc_settings["replace_redmine_login"] == '1'
-            render_error({ :message => error.html_safe, :status => 403 })
-            return false
-          else
-            flash[:error] = error
-            redirect_to signin_url
-          end
+          return deny_oidc_login
         else
           user.update_attribute(:last_login_on, Time.now)
           params[:back_url] = request.env["omniauth.origin"] unless request.env["omniauth.origin"].blank?
@@ -117,6 +118,19 @@ module RedmineOmniauthOidc
       end
 
       private
+
+      # Rejects an OIDC login attempt. Uses the generic invalid-credentials
+      # message so a locked/registered account is not disclosed to the caller.
+      def deny_oidc_login
+        error = l(:notice_account_invalid_credentials).sub(/\.$/, '')
+        if oidc_settings["replace_redmine_login"] == '1'
+          render_error({ :message => error.html_safe, :status => 403 })
+        else
+          flash[:error] = error
+          redirect_to signin_url
+        end
+        false
+      end
 
       def oidc_settings
         RedmineOmniauthOidc.settings_hash

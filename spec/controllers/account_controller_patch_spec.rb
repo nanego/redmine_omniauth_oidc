@@ -101,6 +101,25 @@ describe AccountController, type: :controller do
       expect(response).to redirect_to('/login')
     end
 
+    context "non-active existing accounts" do
+      it "does not log in a locked account" do
+        User.find_by_mail("admin@somenet.foo").lock!
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:user_id]).to be_nil
+        expect(response).to redirect_to('/login')
+      end
+
+      it "does not log in a registered (not yet activated) account" do
+        user = User.find_by_mail("admin@somenet.foo")
+        user.update_column(:status, User::STATUS_REGISTERED)
+        request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")
+        get :login_with_oidc_callback, params: { :provider => "openid_connect" }
+        expect(session[:user_id]).to be_nil
+        expect(response).to redirect_to('/login')
+      end
+    end
+
     context "auto-provisioning" do
       before do
         Setting["plugin_redmine_omniauth_oidc"]["auto_provision"] = '1'
@@ -138,6 +157,9 @@ describe AccountController, type: :controller do
         user = User.find_by_mail("pending@ministere.fr")
         expect(user).not_to be_nil
         expect(user.status).to eq User::STATUS_REGISTERED
+        # A freshly auto-provisioned account is still logged in, even when created
+        # as 'registered' — the non-active block only applies to existing accounts.
+        expect(session[:user_id]).to eq(user.id)
       end
     end
   end
