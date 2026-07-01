@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        ruby: ['3.4']
+        ruby: [ '4.0' ]
         db: ['postgres']
       fail-fast: false
 
@@ -81,7 +81,7 @@ jobs:
 
       - name: Install Ruby dependencies
         working-directory: redmine
-        run: bundle install --jobs=4 --retry=3 --without development
+        run: bundle config set --local without 'development' && bundle install --jobs=4 --retry=3
 
       - name: Setup database and initializer
         env:
