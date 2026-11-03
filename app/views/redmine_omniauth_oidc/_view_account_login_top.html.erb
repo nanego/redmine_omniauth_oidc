@@ -10,7 +10,9 @@
     # Unescape back_url on-the-fly — it may be double-escaped behind reverse proxies
     @back_url = CGI.unescape(@back_url) if @back_url && @back_url.match(/^https?%3A/)
   %>
-  <%= button_to label_for_oidc_login, :controller => "account", :action => "login_with_oidc_redirect", :origin => @back_url %>
+  <%= button_to label_for_oidc_login,
+                { :controller => "account", :action => "login_with_oidc_redirect", :origin => @back_url },
+                :autofocus => true %>
 </div>
 
 <% end %>
