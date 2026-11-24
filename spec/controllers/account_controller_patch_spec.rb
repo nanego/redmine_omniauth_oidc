@@ -44,6 +44,34 @@ describe AccountController, type: :controller do
     end
   end
 
+  context "GET /login when OIDC replaces the Redmine login", :render_views => true do
+    render_views
+
+    before do
+      @previous_settings = Setting["plugin_redmine_omniauth_oidc"]
+      Setting["plugin_redmine_omniauth_oidc"] = @previous_settings.merge("enabled" => "1", "replace_redmine_login" => "1")
+    end
+
+    after do
+      Setting["plugin_redmine_omniauth_oidc"] = @previous_settings
+    end
+
+    it "posts to the OIDC provider with the back url as origin" do
+      allow(controller).to receive(:protect_against_forgery?).and_return(true)
+      get :login, params: { :back_url => "/projects" }
+      assert_select 'form[method=post][action=?]', '/auth/openid_connect' do
+        assert_select 'input[name=authenticity_token]'
+        assert_select 'input[name=origin][value=?]', '/projects'
+      end
+    end
+
+    it "escapes the back url" do
+      get :login, params: { :back_url => '"><script>alert(1)</script>' }
+      expect(response.body).not_to include('"><script>alert(1)</script>')
+      assert_select 'input[name=origin][value=?]', '"><script>alert(1)</script>'
+    end
+  end
+
   context "login_with_oidc_callback" do
     it "should redirect to /my/page after successful login by email" do
       request.env["omniauth.auth"] = oidc_auth_hash(email: "admin@somenet.foo")

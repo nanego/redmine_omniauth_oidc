@@ -20,13 +20,12 @@ module RedmineOmniauthOidc
         if oidc_settings["enabled"] == '1' && oidc_settings["replace_redmine_login"] == '1'
           # We use omniauth-rails_csrf_protection, so we must POST.
           # A redirect_to would generate a GET request which is rejected.
-          render :inline => %Q{
-            <form method="POST" action="/auth/openid_connect">
-              <input type="hidden" name="authenticity_token" value="#{form_authenticity_token}">
-              <input type="hidden" name="origin" value="#{back_url}">
-              <script>document.forms[0].submit();</script>
-            </form>
-          }
+          render :inline => <<~ERB
+            <%= form_tag({:controller => 'account', :action => 'login_with_oidc_redirect'}) do %>
+              <%= hidden_field_tag 'origin', back_url %>
+            <% end %>
+            <%= javascript_tag 'document.forms[0].submit();' %>
+          ERB
         else
           login_without_oidc
         end
